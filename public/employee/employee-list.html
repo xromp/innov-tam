@@ -1,0 +1,32 @@
+<!-- http://angular-data-grid.github.io/demo/material/#!?page=1&itemsPerPage=25&sort=code-desc -->
+<div class="pull-right">
+    <button class="btn btn-success" ng-click="ec.showEmpEntry()"> Add New Employee </button>
+    <button class="btn btn-default"> Edit </button>
+</div>
+<div class="col-md-12">
+    <div class="card">
+        <div class="card-header" data-background-color="purple">
+            <h4 class="title">Employee Masterfile</h4>
+            
+        </div>
+        <div class="card-content table-responsive">
+            <table class="table">
+                <thead class="text-primary">
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Mobile no.</th>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="employee in ec.employeeList">
+                        <td ng-bind="$index+1"></td>
+                        <td ng-bind="employee.name"></td>
+                        <td ng-bind="employee.roledesc"></td>
+                        <td ng-bind="employee.mobileno"></td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>

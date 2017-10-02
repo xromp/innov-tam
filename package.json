@@ -1,0 +1,17 @@
+{
+  "name": "tam",
+  "version": "1.0.0",
+  "description": "Timeaway Management",
+  "main": "index.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "rom",
+  "license": "ISC",
+  "dependencies": {
+    "fullcalendar": "^3.4.0"
+  }
+}
