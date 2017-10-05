@@ -1,7 +1,6 @@
 (function(){
-	'use strict';
 	angular
-		.module('tamapp',['ngMaterial', 'ngRoute', 'ngAnimate' ,'ui.router'])
+		.module('tamapp',['firebase', 'ngMaterial', 'ngRoute', 'ngAnimate' ,'ui.router'])
 		.config(Config)
 
 		Config.$inject = ['$routeProvider', '$urlRouterProvider', '$stateProvider', '$locationProvider', '$controllerProvider', '$compileProvider', '$filterProvider'];
@@ -21,13 +20,19 @@
 				url: '/employee',
 				templateUrl:'employee/employee-list.html',
 				controller:'EmployeeCtrl',
-					controllerAs:'ec'
+				controllerAs:'ec'
 			})
 			.state('employee-create', {
 				url: '/employee/create',
 				templateUrl:'employee/employee-create.html',
 				controller:'EmployeeCreateCtrl',
-					controllerAs:'ecc'
+				controllerAs:'ecc'
+			})
+			.state('employee-edit', {
+				url: '/employee/edit/:uid',
+				templateUrl:'/employee/employee-create.html',
+				controller:'EmployeeCreateCtrl',
+				controllerAs:'ecc'
 			})
 			$urlRouterProvider.otherwise('/dashboard');
 		}

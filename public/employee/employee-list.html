@@ -1,7 +1,6 @@
 <!-- http://angular-data-grid.github.io/demo/material/#!?page=1&itemsPerPage=25&sort=code-desc -->
 <div class="pull-right">
     <button class="btn btn-success" ng-click="ec.showEmpEntry()"> Add New Employee </button>
-    <button class="btn btn-default"> Edit </button>
 </div>
 <div class="col-md-12">
     <div class="card">
@@ -18,11 +17,11 @@
                     <th>Mobile no.</th>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="employee in ec.employeeList">
+                    <tr ng-repeat="employee in ec.employeeList" ng-click="ec.showDetails(employee, $event)" href="#">
                         <td ng-bind="$index+1"></td>
-                        <td ng-bind="employee.name"></td>
-                        <td ng-bind="employee.roledesc"></td>
-                        <td ng-bind="employee.mobileno"></td>
+                        <td ng-bind="employee.lname + ', ' + employee.fname + ' ' + employee.mname"></td>
+                        <td ng-bind="employee.role"></td>
+                        <td ng-bind="employee.personalContactNo"></td>
                     </tr>
                 </tbody>
             </table>

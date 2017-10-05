@@ -20,21 +20,21 @@
     max-height: 240px; }
 </style>
 <!--<div class="col-md-8">  -->
-<div class="col-md-8">
+<div class="col-md-8" id="employeeCreate">
     <div class="card">
         <div class="card-header" data-background-color="purple">
-            <h4 class="title">Create New Person</h4>
+            <h4 class="title">{{(ecc.action == 'CREATE') ? 'Create New' : 'Update' }} Employee</h4>
             <p class="category">Complete your profile</p>
         </div>
         <div class="card-content">
-            <form name="ecc.frmEmpCreate" ng-submit="ecc.save(ecc.employeeList)" novalidate>
+            <form name="ecc.frmEmpCreate" ng-submit="ecc.save(ecc.employeeList, $event)" novalidate>
                 <div class="row">
                     <div class="col-md-3">
                         <md-input-container>
                             <label class="control-label">Last Name</label>
                             <input type="text" name="lname" ng-model="ecc.employeeList.lname" required>
-                            <div ng-messages="ecc.frmEmpCreate.lname.$error" ng-show="ecc.frmEmpCreate.lname.$dirty">
-                                <div ng-message="required">Last Name is required.</div>
+                            <div ng-messages="ecc.frmEmpCreate.lname.$error">
+                                <div ng-message="required"  ng-show="ecc.frmEmpCreate.lname.$error.required">Last Name is required.</div>
                             </div>
                         </md-input-container>
                     </div>
@@ -42,8 +42,8 @@
                         <md-input-container>
                             <label class="control-label">First Name</label>
                             <input type="text" name="fname" ng-model="ecc.employeeList.fname" required>
-                            <div ng-messages="ecc.frmEmpCreate.fname.$error" ng-show="ecc.frmEmpCreate.fname.$dirty">
-                                <div ng-message="required">First Name is required.</div>
+                            <div ng-messages="ecc.frmEmpCreate.fname.$error">
+                                <div ng-message="required"  ng-show="ecc.frmEmpCreate.fname.$error.required">First Name is required.</div>
                             </div>
                         </md-input-container>
                     </div>
@@ -69,8 +69,8 @@
                         <md-input-container>
                             <label class="control-label">Personnel No.</label>
                             <input type="text" name="personnelNo" ng-model="ecc.employeeList.personnelNo" required>
-                            <div ng-messages="ecc.frmEmpCreate.personnelNo.$error" ng-show="ecc.frmEmpCreate.personnelNo.$dirty">
-                                <div ng-message="required">Personnel No. is required.</div>
+                            <div ng-messages="ecc.frmEmpCreate.personnelNo.$error">
+                                <div ng-message="required"  ng-show="ecc.frmEmpCreate.personnelNo.$error.required">Personnel No. is required.</div>
                             </div>
                         <md-input-container>
                     </div>
@@ -85,17 +85,17 @@
                         <md-input-container>
                             <label class="control-label">Role</label>
                             <input type="text" name="role" ng-model="ecc.employeeList.role"required>
-                            <div ng-messages="ecc.frmEmpCreate.role.$error" ng-show="ecc.frmEmpCreate.role.$dirty">
-                                <div ng-message="required">Role is required.</div>
+                            <div ng-messages="ecc.frmEmpCreate.role.$error">
+                                <div ng-message="required"  ng-show="ecc.frmEmpCreate.role.$error.required">Role is required.</div>
                             </div>
                         <md-input-container>
                     </div>
                     <div class="col-md-3">
                         <md-input-container>
-                            <label class="control-label">Capability.</label>
+                            <label class="control-label">Capability</label>
                             <input type="text" name="capability" ng-model="ecc.employeeList.capability"required>
-                            <div ng-messages="ecc.frmEmpCreate.capability.$error" ng-show="ecc.frmEmpCreate.capability.$dirty">
-                                <div ng-message="required">Role is required.</div>
+                            <div ng-messages="ecc.frmEmpCreate.capability.$error">
+                                <div ng-message="required"  ng-show="ecc.frmEmpCreate.capability.$error.required">Capability is required.</div>
                             </div>
                         <md-input-container>
                     </div>
@@ -104,10 +104,10 @@
                 <div class="row">
                     <div class="col-md-3">
                         <md-input-container>
-                            <label class="control-label">Career Level.</label>
+                            <label class="control-label">Career Level</label>
                             <input type="text" name="level" ng-model="ecc.employeeList.level"required>
-                            <div ng-messages="ecc.frmEmpCreate.level.$error" ng-show="ecc.frmEmpCreate.level.$dirty">
-                                <div ng-message="required">Career Level is required.</div>
+                            <div ng-messages="ecc.frmEmpCreate.level.$error">
+                                <div ng-message="required"  ng-show="ecc.frmEmpCreate.level.$error.required">Career Level is required.</div>
                             </div>
                         <md-input-container>
                     </div>
@@ -121,8 +121,8 @@
                         <md-input-container>
                             <label class="control-label">Adress</label>
                             <input type="text" name="address" ng-model="ecc.employeeList.address" required>
-                            <div ng-messages="ecc.frmEmpCreate.address.$error" ng-show="ecc.frmEmpCreate.address.$dirty">
-                                <div ng-message="required">Address is required.</div>
+                            <div ng-messages="ecc.frmEmpCreate.address.$error">
+                                <div ng-message="required"  ng-show="ecc.frmEmpCreate.address.$error.required">Address is required.</div>
                             </div>
                         <md-input-container>
                     </div>
@@ -132,9 +132,9 @@
                         <md-input-container>
                             <label class="control-label">Personal Email</label>
                             <input type="text" name="personalEmail" ng-model="ecc.employeeList.personalEmail" required ng-pattern="ecc.emailFormat">
-                            <div ng-messages="ecc.frmEmpCreate.personalEmail.$error" ng-show="ecc.frmEmpCreate.personalEmail.$dirty">
-                                <div ng-message="required">Personal Email is required.</div>
-                                <div ng-message="pattern">Invalid email.</div>
+                            <div ng-messages="ecc.frmEmpCreate.personalEmail.$error">
+                                <div ng-message="required" ng-show="ecc.frmEmpCreate.personalEmail.$error.required">Personal Email is required.</div>
+                                <div ng-message="pattern" ng-show="ecc.frmEmpCreate.personalEmail.$error.pattern">Invalid email.</div>
                             </div>
                         <md-input-container>
                     </div>
@@ -142,9 +142,9 @@
                         <md-input-container>
                             <label class="control-label">Accenture Email</label>
                             <input type="text" name="accentureEmail" ng-model="ecc.employeeList.accentureEmail" required ng-pattern="ecc.emailFormat">
-                            <div ng-messages="ecc.frmEmpCreate.accentureEmail.$error" ng-show="ecc.frmEmpCreate.accentureEmail.$dirty">
-                                <div ng-message="required">Accenture Email is required.</div>
-                                <div ng-message="pattern">Invalid email.</div>
+                            <div ng-messages="ecc.frmEmpCreate.accentureEmail.$error">
+                                <div ng-message="required"  ng-show="ecc.frmEmpCreate.accentureEmail.$error.required">Accenture Email is required.</div>
+                                <div ng-message="pattern" ng-show="ecc.frmEmpCreate.accentureEmail.$error.pattern">Invalid email.</div>
                             </div>
                         <md-input-container>
                     </div>
@@ -152,8 +152,8 @@
                         <md-input-container>
                             <label class="control-label">Personal Contact No.</label>
                             <input type="text" name="personalContactNo" ng-model="ecc.employeeList.personalContactNo" required>
-                            <div ng-messages="ecc.frmEmpCreate.personalContactNo.$error" ng-show="ecc.frmEmpCreate.personalContactNo.$dirty">
-                                <div ng-message="required">Personal Contact is required.</div>
+                            <div ng-messages="ecc.frmEmpCreate.personalContactNo.$error">
+                                <div ng-message="required"  ng-show="ecc.frmEmpCreate.personalContactNo.$error.required">Personal Contact is required.</div>
                             </div>
                         <md-input-container>
                     </div>
@@ -176,20 +176,18 @@
                                         md-on-close="clearSearchTerm()"
                                         data-md-container-class="selectdemoSelectHeader"
                                         name = "approver"
-                                        multiple required>
+                                        required>
                                 <md-select-header class="demo-select-header">
                                 <input ng-model="searchTerm"
                                         type="search"
                                         placeholder="Search for a Supervisor.."
                                         class="demo-header-searchbox md-text">
                                 </md-select-header>
-                                <md-optgroup label="vegetables">
                                 <md-option ng-value="approver.uid" ng-repeat="approver in ecc.approverList |
-                                    filter:searchTerm">{{approver.name}}</md-option>
-                                </md-optgroup>
+                                filter:searchTerm">{{approver.name}}</md-option>
                             </md-select>
-                            <div ng-messages="ecc.frmEmpCreate.approver.$error" ng-show="ecc.frmEmpCreate.approver.$dirty">
-                                <div ng-message="required">Approver is required.</div>
+                            <div ng-messages="ecc.frmEmpCreate.approver.$error">
+                                <div ng-message="required"  ng-show="ecc.frmEmpCreate.approver.$error.required">Approver is required.</div>
                             </div>
                         </md-input-container>
                     </div>
@@ -199,7 +197,8 @@
                             <md-select ng-model="ecc.employeeList.team"
                                         md-on-close="clearSearchTerm()"
                                         data-md-container-class="selectdemoSelectHeader"
-                                        multiple required>
+                                        name="team"
+                                        required>
                                 <md-select-header class="demo-select-header">
                                 <input ng-model="searchTerm"
                                         type="search"
@@ -211,15 +210,15 @@
                                     filter:searchTerm">{{team.name}}</md-option>
                                 </md-optgroup>
                             </md-select>
-                            <div ng-messages="ecc.frmEmpCreate.team.$error" ng-show="ecc.frmEmpCreate.team.$dirty">
-                                <div ng-message="required">Team is required.</div>
+                            <div ng-messages="ecc.frmEmpCreate.team.$error">
+                                <div ng-message="required"  ng-show="ecc.frmEmpCreate.team.$error.required">Team is required.</div>
                             </div>
                         </md-input-container>
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary pull-right">Update Profile</button>
-                <button type="button" class="btn btn-default pull-right">Back</button>
+                <button type="submit" class="btn btn-primary pull-right">{{(ecc.action == 'CREATE') ? 'Submit' : 'Update' }}</button>
+                <button type="button" class="btn btn-default pull-right" ng-click="ecc.back()">Back</button>
                 <div class="clearfix"></div>
             </form>
         </div>

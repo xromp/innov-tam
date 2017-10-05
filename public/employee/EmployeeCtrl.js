@@ -4,51 +4,119 @@
         .module('tamapp')
         .controller('EmployeeCtrl',EmployeeCtrl)
         .controller('EmployeeCreateCtrl',EmployeeCreateCtrl)
+        .controller('EmployeeDetailsModalCtrl',EmployeeDetailsModalCtrl)
+        .service('EmployeeSrvcs',EmployeeSrvcs)
 
-        EmployeeCtrl.$inject=['$state']
-        function EmployeeCtrl($state){
+        EmployeeCtrl.$inject=['$scope', '$state', '$firebaseArray', '$mdDialog']
+        function EmployeeCtrl($scope, $state, $firebaseArray, $mdDialog){
             var vm = this;
-
-            vm.employeeList = [
-                {'lname':'Pena', 'fname':'Rom', 'name':'Pena, Rom A.', 'role':'CASEHANDLER', 'roledesc':'Case Handler', 'mobileno':'+639211312'},
-                {'lname':'Doe', 'fname':'John', 'name': 'Doe, John E.','role':'SUPERVISOR', 'roledesc':'Supervisor', 'mobileno':'+639212021'}
-            ]
 
             vm.showEmpEntry = function() {
                 $state.go('employee-create');
-            }
-        }
+            };
 
-        EmployeeCreateCtrl.$inject=['$scope', '$element', '$filter']
-        function EmployeeCreateCtrl($scope, $element, $filter) {
+            vm.getEmployeeList = function() {
+                vm.employeeList = $firebaseArray(employeeRef);
+                console.log(vm.employeeList);
+            };
+
+            vm.showDetails = function(data, event) {
+                $mdDialog.show({
+                    controller: EmployeeDetailsModalCtrl,
+                    templateUrl: 'employee/employee-details-modal.html',
+                    parent: angular.element(document.body),
+                    targetEvent: event,
+                    clickOutsideToClose:true,
+                    resolve: {
+                        formData: function(){
+                            return data;
+                        }
+                    }
+                  })
+                  .then(function(answer) {
+                    $scope.status = 'You said the information was "' + answer + '".';
+                  }, function() {
+                    $scope.status = 'You cancelled the dialog.';
+                  });
+            };
+
+            vm.init = function() {
+                vm.getEmployeeList();    
+            }();
+        };
+
+        EmployeeCreateCtrl.$inject=['$scope', '$element', '$filter', '$state', '$stateParams', '$firebaseArray', '$firebaseObject','$mdDialog', 'EmployeeSrvcs']
+        function EmployeeCreateCtrl($scope, $element, $filter, $state, $stateParams, $firebaseArray, $firebaseObject, $mdDialog, EmployeeSrvcs) {
             var vm = this;
+            vm.employeeList = [];
             vm.emailFormat = /^[a-z]+[a-z0-9._]+@[a-z]+\.[a-z.]{2,5}$/;
             $scope.vegetables = ['Corn' ,'Onions' ,'Kale' ,'Arugula' ,'Peas', 'Zucchini'];
-
-            vm.approverList = [
-                {uid:1, name:'John'},
-                {uid:2, name:'Mark'},
-                {uid:3, name:'Jose'}
-            ];
-
-            vm.teamList = [
-                {teamid:1, name:'Team A'},
-                {teamid:2, name:'Team B'},
-                {teamid:3, name:'Team C'}
-            ];
-
+            
+            if($stateParams.uid){
+                vm.action = 'EDIT';
+                vm.employeeList.uid = $stateParams.uid;
+            } else {
+                vm.action = 'CREATE';
+            };
+            
             $scope.searchTerm;
             $scope.clearSearchTerm = function() {
               $scope.searchTerm = '';
             };
 
-            vm.save = function(data) {
-                console.log(vm.frmEmpCreate.$valid);
-                // var dataCopy = angular.copy(data);
+            vm.save = function(data, event) {
+                if(vm.frmEmpCreate.$valid) {
+                    var dataCopy = data;
 
-                // dataCopy.birthDate = $filter('date')(dataCopy.birthday,'yyyy-MM-dd');
-                // dataCopy.hireDate = $filter('date')(dataCopy.hireDate,'yyyy-MM-dd');
+                    dataCopy.birthDate = $filter('date')(dataCopy.birthDate,'yyyy-MM-dd');
+                    dataCopy.hireDate = $filter('date')(dataCopy.hireDate,'yyyy-MM-dd');
+                    dataCopy.name = dataCopy.lname + ', ' + dataCopy.fname + ' ' + dataCopy.mname;
+                    
+                    
+                    if(vm.action == 'CREATE'){
+                        var key = employeeRef.push().key;
+                        dataCopy.uid = key;
+                        
+                        employeeRef.child(key).set(dataCopy).then( function(response) {
+                            $mdDialog.show(
+                                $mdDialog.alert()
+                                .parent(angular.element(document.querySelector('body')))
+                                .clickOutsideToClose(true)
+                                .title('Employee Creation')
+                                .textContent('Employee profile has been successfully created!')
+                                .ariaLabel('Alert Dialog Demo')
+                                .ok('Close')
+                                .targetEvent(event)
+                            );
+                        },function(error) {
+                            alert('Something wrong : ', error.message);
+                        });
+                    } else if (vm.action == 'EDIT') {
+                        employeeRef.child(dataCopy.uid).set(dataCopy).then( function(response) {
+                            $mdDialog.show(
+                                $mdDialog.alert()
+                                .parent(angular.element(document.querySelector('body')))
+                                .clickOutsideToClose(true)
+                                .title('Employee Update')
+                                .textContent('Employee profile has been successfully updated!')
+                                .ariaLabel('Alert Dialog Demo')
+                                .ok('Close')
+                                .targetEvent(event)
+                            );
+                        },function(error) {
+                            alert('Something wrong :', error.message);
+                        });
+                        
+                    }
+                } else { 
+                    return;
+                }
                 
+            };
+
+
+            vm.back = function(){
+                $state.go('employee');
             };
 
             // The md-select directive eats keydown events for some quick select
@@ -57,7 +125,79 @@
                 ev.stopPropagation();
             });
 
-        }
+            vm.init = function(){
+                vm.approverList = [];
+                vm.teamList = [];
+
+                var employeeObj = $firebaseObject(employeeRef)
+                employeeObj.$loaded().then(function() {
+                    angular.forEach(employeeObj, (value, key)=> {
+                        if (value.isApprover) {
+                            var data = value;
+                            data.uid = key;
+                            vm.approverList.push(data);
+                        }
+                    });
+                });
+
+                var teamObj = $firebaseObject(teamRef)
+                teamObj.$loaded().then(function() {
+                    angular.forEach(teamObj, (value, key)=> {
+                        var data = value;
+                        data.teamid = key;
+                        vm.teamList.push(data);
+                    });
+                });
+
+                if (vm.action == 'EDIT') {
+                    EmployeeSrvcs.getEmpDetails(vm.employeeList).then(function(response){
+                        var formData = response[vm.employeeList.uid];
+                        formData.birthDate = new Date(formData.birthDate);
+                        formData.hireDate = new Date(formData.hireDate);
+                        vm.employeeList = formData;
+
+                        console.log(vm.employeeList);
+                    },function(error){
+                        console.log(error);
+                    });
+                }
+
+            }();
+
+        };
         
+        EmployeeDetailsModalCtrl.$inject = ['$scope', '$state', 'formData', '$filter', '$mdDialog', '$window']
+        function EmployeeDetailsModalCtrl($scope, $state, formData, $filter, $mdDialog, $window){
+            $scope.employeeDetails = formData;
+            $scope.employeeDetails.birthDate = $filter('date')($scope.employeeDetails.birthDate,'dd/MM/yyyy');
+            $scope.employeeDetails.hireDate = $filter('date')($scope.employeeDetails.hireDate,'dd/MM/yyyy');
+            console.log($scope.employeeDetails);
+            $scope.edit = function(){
+                $mdDialog.cancel();
+                $window.location.href = '/employee/edit/'+$scope.employeeDetails.$id;
+            };
+
+            $scope.close = function(){
+                $mdDialog.cancel();
+            };
+        };
+
+        EmployeeSrvcs.$inject=['$firebaseArray', '$firebaseObject', '$q'];
+        function EmployeeSrvcs($firebaseArray, $firebaseObject, $q) {
+            return {
+                getEmpDetails: function(data){
+                    var deferred = $q.defer();
+                    employeeRef.orderByChild("uid").equalTo(data.uid).once("value", function(dataSnapshot){
+                      if(dataSnapshot.exists()){
+                        // console.log(dataSnapshot.val());
+                        deferred.resolve(dataSnapshot.val());
+                      } else {
+                        deferred.reject("Not found.");
+                      }
+                    });
+                    return deferred.promise;
+                }
+            };
+        };
 	
 })();
